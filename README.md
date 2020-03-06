@@ -8,10 +8,12 @@ I've been on a bit of a kernel kick lately, so I decided I'd try and get a Nim k
 
 You will need:
 
-- QEMU (for running the kernel)
 - GCC
+- grub
+- xorriso
 - A GCC cross compiler for i686 (i.e. `i686-elf-gcc`)
 - A GCC assembler for i686 (i.e. `i686-elf-as`)
+- QEMU (for running the kernel)
 - Nim 1.0.6 or later
 - rename-perl (some machines come with this, and some with gnu rename)
 

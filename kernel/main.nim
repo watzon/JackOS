@@ -1,4 +1,4 @@
-import ioutils
+import tty
 type
   TMultiboot_header = object
   PMultiboot_header = ptr TMultiboot_header

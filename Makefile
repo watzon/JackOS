@@ -9,11 +9,12 @@ OBJECT_FILES = \
 	build/boot.o \
 	build/main.o \
 	build/stdlib_system.o \
-	build/ioutils.o
+	build/tty.o
 
 clean:
 	-rm main.bin
 	-rm -rf build
+	-rm -rf iso
 
 main.nim:
 	nim c -d:release kernel/$@
@@ -26,9 +27,15 @@ rename:
 	-perl-rename 's/(.*)\.nim\.c\.o$$/$$1\.o/g' build/*.nim.c.o
 
 link:
-	$(CC) -T kernel/linker.ld -o main.bin -ffreestanding -O2 -nostdlib $(OBJECT_FILES)
+	$(CC) -T kernel/linker.ld -o jackos.bin -ffreestanding -O2 -nostdlib $(OBJECT_FILES)
 
-build: main.nim boot.s rename link
+iso:
+	mkdir -p iso/boot/grub
+	mv jackos.bin iso/boot/
+	cp grub/grub.cfg iso/boot/grub
+	grub-mkrescue -o jackos.iso iso
+
+build: main.nim boot.s rename link iso
 
 run:
-	qemu-system-x86_64 -kernel main.bin
+	qemu-system-x86_64 -cdrom jackos.iso

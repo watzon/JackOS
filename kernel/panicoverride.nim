@@ -1,4 +1,4 @@
-import ioutils
+import tty
 {.push stack_trace: off, profiler:off.}
 
 proc rawoutput(s: string) =
