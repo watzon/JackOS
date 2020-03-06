@@ -1,6 +1,5 @@
 type
   PVIDMem* = ptr array[0..65_000, TEntry]
-
   TVGAColor* = enum
     Black = 0,
     Blue = 1,
@@ -18,15 +17,19 @@ type
     LightMagenta = 13,
     Yellow = 14,
     White = 15
-
   TPos* = tuple[x: int, y: int]
-
   TAttribute* = distinct uint8
   TEntry* = distinct uint16
 
 const
   VGAWidth* = 80
   VGAHeight* = 25
+
+var
+  VGABuffer: PVIDMem = nil
+
+proc initTTY*(buffer: PVIDMem) =
+  VGABuffer = buffer
 
 proc makeColor*(bg: TVGAColor, fg: TVGAColor): TAttribute =
   ## Combines a foreground and background color into a ``TAttribute``.
@@ -43,6 +46,9 @@ proc writeChar*(vram: PVidMem, entry: TEntry, pos: TPos) =
   ## Writes a character at the specified ``pos``.
   let index = (80 * pos.y) + pos.x
   vram[index] = entry
+
+proc writeChar*(entry: TEntry, pos: TPos) =
+  writeChar(VGABuffer, entry, pos)
 
 proc rainbow*(vram: PVidMem, text: string, pos: TPos) =
   ## Writes a string at the specified ``pos`` with varying colors which, despite
@@ -63,10 +69,16 @@ proc rainbow*(vram: PVidMem, text: string, pos: TPos) =
     
     vram.writeChar(makeEntry(text[i], attr), (pos.x+i, pos.y))
 
+proc rainbow*(text: string, pos: TPos) =
+  rainbow(VGABuffer, text, pos)
+
 proc writeString*(vram: PVidMem, text: string, color: TAttribute, pos: TPos) =
   ## Writes a string at the specified ``pos`` with the specified ``color``.
   for i in 0 .. text.len-1:
     vram.writeChar(makeEntry(text[i], color), (pos.x+i, pos.y))
+
+proc writeString*(text: string, color: TAttribute, pos: TPos) =
+  writeString(VGABuffer, text, color, pos)
 
 proc screenClear*(video_mem: PVidMem, color: TVGAColor) =
   ## Clears the screen with a specified ``color``.

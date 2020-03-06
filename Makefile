@@ -1,15 +1,16 @@
 CC = i686-elf-gcc
 ASMC = i686-elf-as
 OUTFILE = jackos-x86.bin
+BUILDDIR = build
 
 # Add files here as they're created. test.nim becomes test.o.
 # Standard library imports will need to be added here too as
 # stdlib_[name].o
 OBJECT_FILES = \
-	build/boot.o \
-	build/main.o \
-	build/stdlib_system.o \
-	build/tty.o
+	$(BUILDDIR)/boot.o \
+	$(BUILDDIR)/main.o \
+	$(BUILDDIR)/stdlib_system.o \
+	$(BUILDDIR)/tty.o
 
 clean:
 	-rm main.bin
@@ -20,11 +21,11 @@ main.nim:
 	nim c -d:release kernel/$@
 
 boot.s:
-	$(ASMC) kernel/boot.s -o build/boot.o
+	$(ASMC) kernel/boot.s -o $(BUILDDIR)/boot.o
 
 rename:
-	-perl-rename 's/\@m(.*)\.nim\.c\.o$$/$$1\.o/g' build/*.nim.c.o
-	-perl-rename 's/(.*)\.nim\.c\.o$$/$$1\.o/g' build/*.nim.c.o
+	-perl-rename 's/\@m(.*)\.nim\.c\.o$$/$$1\.o/g' $(build)/*.nim.c.o
+	-perl-rename 's/(.*)\.nim\.c\.o$$/$$1\.o/g' $(build)/*.nim.c.o
 
 link:
 	$(CC) -T kernel/linker.ld -o jackos.bin -ffreestanding -O2 -nostdlib $(OBJECT_FILES)

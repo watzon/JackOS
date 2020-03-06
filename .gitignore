@@ -2,5 +2,6 @@
 /nimcache/
 *.o
 *.bin
+*.iso
 
 /.vscode/

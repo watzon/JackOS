@@ -8,6 +8,7 @@ proc kmain(mb_header: PMultiboot_header, magic: int) {.exportc.} =
     discard # Something went wrong?
 
   var vram = cast[PVIDMem](0xB8000)
+  initTTY(vram)
   screenClear(vram, Yellow) # Make the screen yellow.
 
   # Demonstration of error handling.
@@ -15,6 +16,6 @@ proc kmain(mb_header: PMultiboot_header, magic: int) {.exportc.} =
   var outOfBounds = vram[x]
 
   let attr = makeColor(Yellow, DarkGrey)
-  writeString(vram, "Nim", attr, (25, 9))
-  writeString(vram, "Expressive. Efficient. Elegant.", attr, (25, 10))
-  rainbow(vram, "It's pure pleasure.", (x: 25, y: 11))
+  writeString("Nim", attr, (25, 9))
+  writeString("Expressive. Efficient. Elegant.", attr, (25, 10))
+  rainbow("It's pure pleasure.", (x: 25, y: 11))
