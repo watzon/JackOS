@@ -10,10 +10,12 @@ OBJECT_FILES = \
 	$(BUILDDIR)/boot.o \
 	$(BUILDDIR)/main.o \
 	$(BUILDDIR)/stdlib_system.o \
-	$(BUILDDIR)/tty.o
+	$(BUILDDIR)/tty.o \
+	# $(BUILDDIR)/io.o
 
 clean:
-	-rm main.bin
+	-rm *.bin
+	-rm *.iso
 	-rm -rf build
 	-rm -rf iso
 
@@ -24,8 +26,8 @@ boot.s:
 	$(ASMC) kernel/boot.s -o $(BUILDDIR)/boot.o
 
 rename:
-	-perl-rename 's/\@m(.*)\.nim\.c\.o$$/$$1\.o/g' $(build)/*.nim.c.o
-	-perl-rename 's/(.*)\.nim\.c\.o$$/$$1\.o/g' $(build)/*.nim.c.o
+	-perl-rename 's/\@m(.*)\.nim\.c\.o$$/$$1\.o/g' $(BUILDDIR)/*.nim.c.o
+	-perl-rename 's/(.*)\.nim\.c\.o$$/$$1\.o/g' $(BUILDDIR)/*.nim.c.o
 
 link:
 	$(CC) -T kernel/linker.ld -o jackos.bin -ffreestanding -O2 -nostdlib $(OBJECT_FILES)
