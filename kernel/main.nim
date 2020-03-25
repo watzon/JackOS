@@ -1,4 +1,5 @@
 import tty
+import cpuid as cpuid
 
 type
   TMultiboot_header = object
@@ -19,6 +20,8 @@ proc kmain(mb_header: PMultiboot_header, magic: int) {.exportc.} =
   # var outOfBounds = vram[x]
 
   let attr = makeColor(LightBlue, White)
+  let info = cpuid.cpu_info()
+  writeString(info.vendor_id, attr, (0, 0))
   writeString("Nim", attr, (25, 9))
   writeString("Expressive. Efficient. Elegant.", attr, (25, 10))
   rainbow("It's pure pleasure.", (x: 25, y: 11))

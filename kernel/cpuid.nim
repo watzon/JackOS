@@ -6,20 +6,20 @@ type
         edx: uint32
 
     CpuInfo* = ref object
-        vendor_id: string
-        family: uint32
-        model: uint32
-        model_name: string
-        stepping: uint32
+        vendor_id*: string
+        family*: uint32
+        model*: uint32
+        model_name*: string
+        stepping*: uint32
 
 proc `$`*(c: CpuInfo): string =
     result = ""
     result.add("CpuInfo {")
     result.add("model_name: " & c.model_name & ", ")
     result.add("vendor_id: " & c.vendor_id & ", ")
-    result.add("model: " & $c.model & ", ")
-    result.add("family: " & $c.family & ", ")
-    result.add("stepping: " & $c.stepping)
+    result.add("model: " & $int(c.model) & ", ")
+    result.add("family: " & $int(c.family) & ", ")
+    result.add("stepping: " & $int(c.stepping))
     result.add("}")
 
 {.push stackTrace:off.}
@@ -100,10 +100,9 @@ proc get_model_name*(): string =
     var p2 = cpuid(0x80000003'u32)
     var p3 = cpuid(0x80000004'u32)
     var data: array[12, uint32] = [p1.eax, p1.ebx, p1.ecx, p1.edx, p2.eax, p2.ebx, p2.ecx, p2.edx, p3.eax, p3.ebx, p3.ecx, p3.edx]
-    var buff = cast[array[48, uint8]](data)[0..47]
-    return cast[string](buff)
+    return $cast[cstring](addr data)
 
-proc cpu_info(): CpuInfo =
+proc cpu_info*(): CpuInfo =
     result = CpuInfo()
     result.vendor_id = get_vendor_id()
     result.family = get_family()
